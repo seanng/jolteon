@@ -4,11 +4,9 @@
   "bin": {
     "next-forge": "dist/index.js"
   },
-  "files": [
-    "dist/index.js"
-  ],
+  "files": ["dist/index.js"],
   "scripts": {
-    "build": "turbo build",
+    "build": "turbo build --filter=web",
     "dev": "turbo dev",
     "lint": "ultracite lint",
     "format": "ultracite format",
