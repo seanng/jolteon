@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export const Footer = () => (
   <Feed queries={[legal.postsQuery]}>
-    {async ([data]) => {
+    {async ([data]: [any]) => {
       'use server';
 
       const navigationItems = [
@@ -28,7 +28,7 @@ export const Footer = () => (
         {
           title: 'Legal',
           description: 'We stay on top of the latest legal requirements.',
-          items: data.legalPages.items.map((post) => ({
+          items: data.legalPages.items.map((post: any) => ({
             title: post._title,
             href: `/legal/${post._slug}`,
           })),
@@ -83,7 +83,7 @@ export const Footer = () => (
                         ) : (
                           <p className="text-xl">{item.title}</p>
                         )}
-                        {item.items?.map((subItem) => (
+                        {item.items?.map((subItem: any) => (
                           <Link
                             key={subItem.title}
                             href={subItem.href}
