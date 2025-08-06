@@ -7,6 +7,9 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
+    "@fontsource/jaro": "^5.2.6",
+    "@fontsource/kanit": "^5.2.6",
+    "@fontsource/maven-pro": "^5.2.8",
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",

@@ -36,3 +36,16 @@
   content: attr(title);
   @apply inline-block text-muted-foreground text-right mb-6 text-sm;
 }
+
+/* Hero Section Styles */
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(255, 214, 10, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 214, 10, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-move 10s linear infinite;
+}
+
+.hero-title-highlight {
+  text-shadow: 3px 3px 0 var(--jolteon-tertiary);
+}

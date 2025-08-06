@@ -9,7 +9,6 @@ export const ThemeProvider = ({
     attribute="class"
     defaultTheme="system"
     enableSystem
-    disableTransitionOnChange
     {...properties}
   >
     {children}

@@ -15,10 +15,9 @@ import { Menu, MoveRight, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
+import { JolteonLogo } from '@repo/design-system/components/ui/jolteon-logo';
 import type { Dictionary } from '@repo/internationalization';
-import Image from 'next/image';
 import { LanguageSwitcher } from './language-switcher';
-import Logo from './logo.svg';
 
 type HeaderProps = {
   dictionary: Dictionary;
@@ -58,7 +57,7 @@ export const Header = ({ dictionary }: HeaderProps) => {
 
   const [isOpen, setOpen] = useState(false);
   return (
-    <header className="sticky top-0 left-0 z-40 w-full border-b bg-background">
+    <header className="sticky top-0 left-0 z-40 w-full border-primary border-b-[3px] bg-secondary">
       <div className="container relative mx-auto flex min-h-20 flex-row items-center gap-4 lg:grid lg:grid-cols-3">
         <div className="hidden flex-row items-center justify-start gap-4 lg:flex">
           <NavigationMenu className="flex items-start justify-start">
@@ -115,14 +114,9 @@ export const Header = ({ dictionary }: HeaderProps) => {
           </NavigationMenu>
         </div>
         <div className="flex items-center gap-2 lg:justify-center">
-          <Image
-            src={Logo}
-            alt="Logo"
-            width={24}
-            height={24}
-            className="dark:invert"
-          />
-          <p className="whitespace-nowrap font-semibold">next-forge</p>
+          <Link href="/" className="flex items-center">
+            <JolteonLogo size="sm" />
+          </Link>
         </div>
         <div className="flex w-full justify-end gap-4">
           <Button variant="ghost" className="hidden md:inline" asChild>
