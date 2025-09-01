@@ -9,7 +9,7 @@ export const JolteonCTA = () => {
   };
 
   return (
-    <section className="relative overflow-hidden py-20 md:py-32" style={{backgroundColor: '#FFC300'}}>
+    <section className="relative overflow-hidden bg-primary py-20 md:py-32">
       <div className="hero-grid pointer-events-none absolute inset-0 opacity-50" />
       <div className="container relative z-10 mx-auto">
         <div className="mx-auto max-w-[800px] text-center">
