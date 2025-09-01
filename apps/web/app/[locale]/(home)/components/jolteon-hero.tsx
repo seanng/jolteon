@@ -1,10 +1,8 @@
 'use client';
 
 import { EmailCaptureForm } from '@repo/design-system/components/ui/email-capture-form';
-import { EnergyParticles } from '@repo/design-system/components/ui/energy-particles';
-import { HeroBadge } from '@repo/design-system/components/ui/hero-badge';
-import { LightningBolt } from '@repo/design-system/components/ui/lightning-bolt';
 import type { Dictionary } from '@repo/internationalization';
+import { Play } from 'lucide-react';
 
 type JolteonHeroProps = {
   dictionary: Dictionary;
@@ -16,13 +14,11 @@ export const JolteonHero = ({ dictionary }: JolteonHeroProps) => {
   };
 
   return (
-    <section className="hero-section relative min-h-[90vh] overflow-hidden bg-gradient-to-br from-background via-primary/5 to-background px-4 py-20 md:px-15 md:py-32">
+    <section className="hero-section relative overflow-hidden bg-gradient-to-br from-background via-primary/5 to-background px-4 py-20 md:py-32">
       <div className="hero-grid pointer-events-none absolute inset-0 opacity-50" />
 
       <div className="container relative z-10 mx-auto">
         <div className="mx-auto max-w-[1400px] text-center">
-          <HeroBadge>September Sale</HeroBadge>
-
           <h1 className="mb-5 font-bold font-headline text-6xl uppercase leading-[0.9] tracking-[-2px] md:text-8xl lg:text-[96px]">
             <span className="relative block">Create at the</span>
             <span className="hero-title-highlight -skew-x-[5deg] relative my-2.5 block transform text-primary md:my-5">
@@ -35,12 +31,21 @@ export const JolteonHero = ({ dictionary }: JolteonHeroProps) => {
             Deliver perfect branded websites for your clients. Powered by AI.
           </p>
 
-          <EmailCaptureForm onSubmit={handleEmailSubmit} className="mb-20" />
+          <div className="relative z-10">
+            <EmailCaptureForm
+              onSubmit={handleEmailSubmit}
+              buttonText="Join waitlist"
+            />
+          </div>
 
-          <div className="relative mt-16 h-[300px]">
-            <div className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 h-[200px] w-[400px] transform md:h-[300px] md:w-[600px]">
-              <LightningBolt />
-              <EnergyParticles />
+          <div className="demo-area-wrapper mt-16 py-24">
+            <div className="relative mx-auto aspect-video max-w-4xl overflow-hidden rounded-lg border-2 border-primary/20 bg-background/50 shadow-2xl">
+              <div className="flex h-full w-full items-center justify-center">
+                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary/20">
+                  <Play className="h-12 w-12 text-primary" fill="currentColor" />
+                </div>
+              </div>
+              <div className="absolute inset-0 bg-black/10" />
             </div>
           </div>
         </div>

@@ -7,7 +7,9 @@ import type { Metadata } from 'next';
 // import { FAQ } from './components/faq';
 // import { Features } from './components/features';
 // import { Hero } from './components/hero';
+import { JolteonCTA } from './components/jolteon-cta';
 import { JolteonHero } from './components/jolteon-hero';
+import { ValueProposition } from './components/value-proposition';
 // import { Stats } from './components/stats';
 // import { Testimonials } from './components/testimonials';
 
@@ -39,6 +41,8 @@ const Home = async ({ params }: HomeProps) => {
         </div>
       )} */}
       <JolteonHero dictionary={dictionary} />
+      <ValueProposition />
+      <JolteonCTA />
       {/* <Cases dictionary={dictionary} />
       <Features dictionary={dictionary} />
       <Stats dictionary={dictionary} />
