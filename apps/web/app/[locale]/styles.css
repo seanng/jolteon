@@ -62,7 +62,7 @@
   left: 50%;
   width: 500px;
   height: 500px;
-  background-color: #FFC300;
+  background-color: hsl(var(--primary));
   border-radius: 50%;
   filter: blur(100px);
   /* transform: translate(-50%, -50%); */

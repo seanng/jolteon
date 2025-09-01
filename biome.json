@@ -4,6 +4,13 @@
   "javascript": {
     "globals": ["Liveblocks"]
   },
+  "linter": {
+    "rules": {
+      "correctness": {
+        "useExhaustiveDependencies": "warn"
+      }
+    }
+  },
   "files": {
     "ignore": [
       "packages/design-system/components/ui/**",
