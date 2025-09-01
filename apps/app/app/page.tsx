@@ -5,7 +5,6 @@ import { Input } from '@repo/design-system/components/ui/input';
 import { ScrollArea } from '@repo/design-system/components/ui/scroll-area';
 import { Skeleton } from '@repo/design-system/components/ui/skeleton';
 import VariationExpandableCard from '@repo/design-system/components/ui/variation-expandable-card';
-import { cn } from '@repo/design-system/lib/utils';
 import { Check, Send } from 'lucide-react';
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 
@@ -256,7 +255,7 @@ function appReducer(state: ApplicationState, action: Action): ApplicationState {
       return { ...state, phase: action.phase };
     case 'ADD_MESSAGE':
       return { ...state, messages: [...state.messages, action.message] };
-    case 'SET_SPECIFICATION':
+    case 'SET_SPECIFICATION': {
       const newSpecs = new Map(state.specifications);
       const spec = newSpecs.get(action.key);
       if (spec) {
@@ -265,6 +264,7 @@ function appReducer(state: ApplicationState, action: Action): ApplicationState {
         newSpecs.set(action.key, spec);
       }
       return { ...state, specifications: newSpecs };
+    }
     case 'SET_CURRENT_QUESTION':
       return { ...state, currentQuestion: action.question };
     case 'SET_VARIATIONS':
@@ -276,9 +276,11 @@ function appReducer(state: ApplicationState, action: Action): ApplicationState {
     case 'INCREMENT_ITERATION':
       return { ...state, iterationCount: state.iterationCount + 1 };
     case 'REORDER_AND_SELECT': {
-      const selectedIndex = state.variations.findIndex(v => v.id === action.id);
+      const selectedIndex = state.variations.findIndex(
+        (v) => v.id === action.id
+      );
       if (selectedIndex === -1) return state;
-      
+
       if (selectedIndex > 0) {
         // Swap selected card with first card
         const newVariations = [...state.variations];
@@ -286,7 +288,11 @@ function appReducer(state: ApplicationState, action: Action): ApplicationState {
         const first = newVariations[0];
         newVariations[0] = selected;
         newVariations[selectedIndex] = first;
-        return { ...state, variations: newVariations, selectedVariation: action.id };
+        return {
+          ...state,
+          variations: newVariations,
+          selectedVariation: action.id,
+        };
       }
       return { ...state, selectedVariation: action.id };
     }
@@ -420,7 +426,6 @@ export default function AIWebsiteBuilder() {
     state.currentQuestion,
     addMessage,
     simulateAIResponse,
-    getNextQuestion,
   ]);
 
   // Handle variation selection from expandable card
@@ -450,23 +455,38 @@ export default function AIWebsiteBuilder() {
 
     // Check if we have a published/selected card (first position)
     const hasPublishedCard = state.selectedVariation !== null;
-    
+
     await simulateAIResponse(
-      hasPublishedCard 
+      hasPublishedCard
         ? 'Keeping your selected design and generating new alternatives...'
         : 'Let me generate new variations based on your feedback...'
     );
-    
+
     dispatch({ type: 'SET_VARIATION_STATE', state: 'generating' });
-    
+
     // If we have a published card, immediately show placeholder cards for the ones being regenerated
     if (hasPublishedCard) {
       const publishedCard = state.variations[0];
       const placeholderVariations = [
         publishedCard,
-        { id: 'loading-1', type: 'html' as const, content: '', metadata: { style: 'loading', features: [] } },
-        { id: 'loading-2', type: 'html' as const, content: '', metadata: { style: 'loading', features: [] } },
-        { id: 'loading-3', type: 'html' as const, content: '', metadata: { style: 'loading', features: [] } },
+        {
+          id: 'loading-1',
+          type: 'html' as const,
+          content: '',
+          metadata: { style: 'loading', features: [] },
+        },
+        {
+          id: 'loading-2',
+          type: 'html' as const,
+          content: '',
+          metadata: { style: 'loading', features: [] },
+        },
+        {
+          id: 'loading-3',
+          type: 'html' as const,
+          content: '',
+          metadata: { style: 'loading', features: [] },
+        },
       ];
       dispatch({ type: 'SET_VARIATIONS', variations: placeholderVariations });
     }
@@ -474,17 +494,19 @@ export default function AIWebsiteBuilder() {
     setTimeout(() => {
       // Generate new variations with unique IDs to avoid conflicts
       const timestamp = Date.now();
-      const newGeneratedVariations = mockVariations.slice(0, 3).map((v, index) => ({
-        ...v,
-        id: `var-refined-${timestamp}-${index + 1}`
-      }));
-      
+      const newGeneratedVariations = mockVariations
+        .slice(0, 3)
+        .map((v, index) => ({
+          ...v,
+          id: `var-refined-${timestamp}-${index + 1}`,
+        }));
+
       // Keep the first variation (published) and add new ones
       const publishedVariation = hasPublishedCard ? state.variations[0] : null;
-      const newVariations = publishedVariation 
+      const newVariations = publishedVariation
         ? [publishedVariation, ...newGeneratedVariations]
         : [...newGeneratedVariations, mockVariations[3]];
-      
+
       dispatch({ type: 'SET_VARIATIONS', variations: newVariations });
       dispatch({ type: 'SET_VARIATION_STATE', state: 'ready' });
       addMessage(
@@ -492,7 +514,13 @@ export default function AIWebsiteBuilder() {
         'Here are the refined variations. Please select your favorite!'
       );
     }, 2500);
-  }, [inputValue, addMessage, simulateAIResponse, state.variations, state.selectedVariation]);
+  }, [
+    inputValue,
+    addMessage,
+    simulateAIResponse,
+    state.variations,
+    state.selectedVariation,
+  ]);
 
   // Handle form submission based on phase
   const handleSubmit = useCallback(
@@ -507,21 +535,12 @@ export default function AIWebsiteBuilder() {
         handleRefinementSubmit();
       }
     },
-    [
-      state.phase,
-      handleInitialSubmit,
-      handleChatSubmit,
-      handleRefinementSubmit,
-      getNextQuestion,
-    ]
+    [state.phase, handleInitialSubmit, handleChatSubmit, handleRefinementSubmit]
   );
 
   // Render message
   const renderMessage = (message: Message) => (
-    <div
-      key={message.id}
-      className="flex justify-start"
-    >
+    <div key={message.id} className="flex justify-start">
       {message.type === 'user' ? (
         <div className="max-w-[80%] rounded-lg bg-muted px-4 py-2">
           <p className="font-medium text-sm">{message.content}</p>
@@ -604,7 +623,7 @@ export default function AIWebsiteBuilder() {
             <Button
               type="submit"
               size="icon"
-              className="absolute top-1/2 right-4 h-8 w-8 -translate-y-1/2"
+              className="-translate-y-1/2 absolute top-1/2 right-4 h-8 w-8"
               disabled={!inputValue.trim() || isTyping}
             >
               <Send className="h-4 w-4" />
@@ -647,7 +666,7 @@ export default function AIWebsiteBuilder() {
             <Button
               type="submit"
               size="icon"
-              className="absolute top-1/2 right-4 h-8 w-8 -translate-y-1/2"
+              className="-translate-y-1/2 absolute top-1/2 right-4 h-8 w-8"
               disabled={!inputValue.trim() || isTyping}
             >
               <Send className="h-4 w-4" />
@@ -659,7 +678,8 @@ export default function AIWebsiteBuilder() {
       {/* Preview Panel */}
       <div className="flex flex-1 flex-col overflow-hidden">
         <div className="flex-1 overflow-y-auto p-6">
-          {state.variationState === 'generating' && state.variations.length === 0 ? (
+          {state.variationState === 'generating' &&
+          state.variations.length === 0 ? (
             // Initial generation - show all skeletons
             <div className="grid gap-4 md:grid-cols-2">
               {[1, 2, 3, 4].map((i) => (
@@ -668,33 +688,41 @@ export default function AIWebsiteBuilder() {
             </div>
           ) : state.variations.length > 0 ? (
             // Check if we have loading placeholders
-            state.variationState === 'generating' && state.variations.some(v => v.id.startsWith('loading-')) ? (
+            state.variationState === 'generating' &&
+            state.variations.some((v) => v.id.startsWith('loading-')) ? (
               // Show mixed content: real card + skeletons
               <div className="grid gap-4 md:grid-cols-2">
-                {state.variations.map((v) => 
+                {state.variations.map((v) =>
                   v.id.startsWith('loading-') ? (
                     <Skeleton key={v.id} className="aspect-video rounded-lg" />
                   ) : (
-                    <div key={v.id} className="relative cursor-pointer rounded-xl overflow-hidden border-2 border-yellow-500 ring-2 ring-yellow-500/50">
+                    <div
+                      key={v.id}
+                      className="relative cursor-pointer overflow-hidden rounded-xl border-2 border-yellow-500 ring-2 ring-yellow-500/50"
+                    >
                       <div className="aspect-video bg-neutral-50 dark:bg-neutral-800">
                         {v.type === 'html' ? (
-                          <div className="relative w-full h-full overflow-hidden">
+                          <div className="relative h-full w-full overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-700">
                               <iframe
                                 srcDoc={v.content}
-                                className="w-full h-full pointer-events-none scale-[0.3] origin-top-left"
+                                className="pointer-events-none h-full w-full origin-top-left scale-[0.3]"
                                 style={{ width: '333%', height: '333%' }}
                                 title={v.metadata.style}
                               />
                             </div>
                           </div>
                         ) : (
-                          <img src={v.content} alt={v.metadata.style} className="w-full h-full object-cover" />
+                          <img
+                            src={v.content}
+                            alt={v.metadata.style}
+                            className="h-full w-full object-cover"
+                          />
                         )}
-                        <div className="absolute top-4 left-4 bg-black/70 text-white rounded-full w-8 h-8 flex items-center justify-center font-semibold text-sm">
+                        <div className="absolute top-4 left-4 flex h-8 w-8 items-center justify-center rounded-full bg-black/70 font-semibold text-sm text-white">
                           1
                         </div>
-                        <div className="absolute top-4 right-4 bg-yellow-500 text-black rounded-full p-2">
+                        <div className="absolute top-4 right-4 rounded-full bg-yellow-500 p-2 text-black">
                           <Check className="h-4 w-4" />
                         </div>
                       </div>
