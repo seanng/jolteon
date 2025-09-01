@@ -3,16 +3,13 @@
 import { EmailCaptureForm } from '@repo/design-system/components/ui/email-capture-form';
 import type { Dictionary } from '@repo/internationalization';
 import { Play } from 'lucide-react';
+import { addToWaitlist } from '@/app/actions/waitlist';
 
 type JolteonHeroProps = {
   dictionary: Dictionary;
 };
 
 export const JolteonHero = ({ dictionary }: JolteonHeroProps) => {
-  const handleEmailSubmit = (email: string) => {
-    console.log('Email submitted:', email);
-  };
-
   return (
     <section className="hero-section relative overflow-hidden bg-gradient-to-br from-background via-primary/5 to-background px-4 py-20 md:py-32">
       <div className="hero-grid pointer-events-none absolute inset-0 opacity-50" />
@@ -33,7 +30,7 @@ export const JolteonHero = ({ dictionary }: JolteonHeroProps) => {
 
           <div className="relative z-10">
             <EmailCaptureForm
-              onSubmit={handleEmailSubmit}
+              onSubmit={addToWaitlist}
               buttonText="Join waitlist"
             />
           </div>

@@ -1,5 +1,6 @@
 import { keys as core } from '@repo/next-config/keys';
 import { createEnv } from '@t3-oss/env-nextjs';
+import { z } from 'zod';
 
 export const env = createEnv({
   extends: [
@@ -12,7 +13,11 @@ export const env = createEnv({
     // security(),   // Optional: ARCJET_KEY
     // rateLimit(),  // Optional: UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN
   ],
-  server: {},
+  server: {
+    GOOGLE_SHEET_ID: z.string().min(1),
+    GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL: z.string().min(1),
+    GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: z.string().min(1),
+  },
   client: {},
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
@@ -22,5 +27,10 @@ export const env = createEnv({
     NEXT_PUBLIC_WEB_URL: process.env.NEXT_PUBLIC_WEB_URL,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_DOCS_URL: process.env.NEXT_PUBLIC_DOCS_URL,
+    GOOGLE_SHEET_ID: process.env.GOOGLE_SHEET_ID,
+    GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL:
+      process.env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL,
+    GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY:
+      process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
   },
 });
