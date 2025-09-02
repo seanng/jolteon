@@ -414,11 +414,6 @@ export function Homepage() {
       if (selected) {
         // Reorder variations to put selected at index 0 and mark as selected
         dispatch({ type: 'REORDER_AND_SELECT', id: variationId });
-        // addMessage(
-        //   'user',
-        //   `I like the ${selected.metadata.style} design`
-        // );
-        // simulateAIResponse(aiResponses.selection);
         dispatch({ type: 'INCREMENT_ITERATION' });
       }
     },
@@ -443,8 +438,9 @@ export function Homepage() {
 
     dispatch({ type: 'SET_VARIATION_STATE', state: 'generating' });
 
-    // If we have a published card, immediately show placeholder cards for the ones being regenerated
+    // Immediately show placeholder cards for loading state
     if (hasPublishedCard) {
+      // If we have a published card, keep it and show loading placeholders for the rest
       const publishedCard = state.variations[0];
       const placeholderVariations = [
         publishedCard,
@@ -462,6 +458,35 @@ export function Homepage() {
         },
         {
           id: 'loading-3',
+          type: 'html' as const,
+          content: '',
+          metadata: { style: 'loading', features: [] },
+        },
+      ];
+      dispatch({ type: 'SET_VARIATIONS', variations: placeholderVariations });
+    } else {
+      // If no published card, show all loading placeholders
+      const placeholderVariations = [
+        {
+          id: 'loading-1',
+          type: 'html' as const,
+          content: '',
+          metadata: { style: 'loading', features: [] },
+        },
+        {
+          id: 'loading-2',
+          type: 'html' as const,
+          content: '',
+          metadata: { style: 'loading', features: [] },
+        },
+        {
+          id: 'loading-3',
+          type: 'html' as const,
+          content: '',
+          metadata: { style: 'loading', features: [] },
+        },
+        {
+          id: 'loading-4',
           type: 'html' as const,
           content: '',
           metadata: { style: 'loading', features: [] },
@@ -689,68 +714,65 @@ export function Homepage() {
                 <Skeleton key={i} className="aspect-video rounded-lg" />
               ))}
             </div>
-          ) : state.variations.length > 0 ? (
-            // Check if we have loading placeholders
-            state.variationState === 'generating' &&
-            state.variations.some((v) => v.id.startsWith('loading-')) ? (
-              // Show mixed content: real card + skeletons
-              <div className="grid gap-4 md:grid-cols-2">
-                {state.variations.map((v) =>
-                  v.id.startsWith('loading-') ? (
-                    <Skeleton key={v.id} className="aspect-video rounded-lg" />
-                  ) : (
-                    <div
-                      key={v.id}
-                      className="relative cursor-pointer overflow-hidden rounded-xl border-2 border-yellow-500 ring-2 ring-yellow-500/50"
-                    >
-                      <div className="aspect-video bg-neutral-50 dark:bg-neutral-800">
-                        {v.type === 'html' ? (
-                          <div className="relative h-full w-full overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-700">
-                              <iframe
-                                srcDoc={v.content}
-                                className="pointer-events-none h-full w-full origin-top-left scale-[0.3]"
-                                style={{ width: '333%', height: '333%' }}
-                                title={v.metadata.style}
-                              />
-                            </div>
+          ) : state.variationState === 'generating' &&
+          state.variations.some((v) => v.id.startsWith('loading-')) ? (
+            // Show mixed content: real card + skeletons
+            <div className="grid gap-4 md:grid-cols-2">
+              {state.variations.map((v) =>
+                v.id.startsWith('loading-') ? (
+                  <Skeleton key={v.id} className="aspect-video rounded-lg" />
+                ) : (
+                  <div
+                    key={v.id}
+                    className="relative cursor-pointer overflow-hidden rounded-xl border-2 border-yellow-500 ring-2 ring-yellow-500/50"
+                  >
+                    <div className="aspect-video bg-neutral-50 dark:bg-neutral-800">
+                      {v.type === 'html' ? (
+                        <div className="relative h-full w-full overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-700">
+                            <iframe
+                              srcDoc={v.content}
+                              className="pointer-events-none h-full w-full origin-top-left scale-[0.3]"
+                              style={{ width: '333%', height: '333%' }}
+                              title={v.metadata.style}
+                            />
                           </div>
-                        ) : (
-                          <img
-                            src={v.content}
-                            alt={v.metadata.style}
-                            className="h-full w-full object-cover"
-                          />
-                        )}
-                        <div className="absolute top-4 left-4 flex h-8 w-8 items-center justify-center rounded-full bg-black/70 font-semibold text-sm text-white">
-                          1
                         </div>
-                        <div className="absolute top-4 right-4 rounded-full bg-yellow-500 p-2 text-black">
-                          <Check className="h-4 w-4" />
-                        </div>
+                      ) : (
+                        <img
+                          src={v.content}
+                          alt={v.metadata.style}
+                          className="h-full w-full object-cover"
+                        />
+                      )}
+                      <div className="absolute top-4 left-4 flex h-8 w-8 items-center justify-center rounded-full bg-black/70 font-semibold text-sm text-white">
+                        1
+                      </div>
+                      <div className="absolute top-4 right-4 rounded-full bg-yellow-500 p-2 text-black">
+                        <Check className="h-4 w-4" />
                       </div>
                     </div>
-                  )
-                )}
-              </div>
-            ) : (
-              // Normal state - show all cards with VariationExpandableCard
-              <VariationExpandableCard
-                cards={state.variations.map((v) => ({
-                  id: v.id,
-                  title: v.metadata.style
-                    .split('-')
-                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                    .join(' '),
-                  description: `Features: ${v.metadata.features.join(', ')}`,
-                  type: v.type,
-                  content: v.content,
-                  metadata: v.metadata,
-                }))}
-                onSelect={handleVariationSelect}
-                selectedId={state.selectedVariation}
-              />
-            )
+                  </div>
+                )
+              )}
+            </div>
+          ) : state.variations.length > 0 ? (
+            // Normal state - show all cards with VariationExpandableCard
+            <VariationExpandableCard
+              cards={state.variations.map((v) => ({
+                id: v.id,
+                title: v.metadata.style
+                  .split('-')
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' '),
+                description: `Features: ${v.metadata.features.join(', ')}`,
+                type: v.type,
+                content: v.content,
+                metadata: v.metadata,
+              }))}
+              onSelect={handleVariationSelect}
+              selectedId={state.selectedVariation}
+            />
           ) : (
             <div className="flex h-full items-center justify-center text-muted-foreground">
               <p>Variations will appear here</p>

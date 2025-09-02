@@ -104,7 +104,7 @@ export default function VariationExpandableCard({
             <motion.div
               layoutId={active.type === 'image' ? `card-${active.id}-${id}` : undefined}
               ref={ref}
-              className="w-full max-w-7xl h-full md:h-[85vh] flex flex-col bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden"
+              className="w-full max-w-7xl h-full md:h-[85vh] flex flex-col bg-white dark:bg-neutral-900 overflow-hidden border-2 border-secondary"
               initial={active.type === 'html' ? { opacity: 0, scale: 0.95 } : undefined}
               animate={{ opacity: isClosing ? 0 : 1, scale: 1 }}
               exit={active.type === 'html' ? { opacity: 0, scale: 0.95 } : undefined}
@@ -195,7 +195,7 @@ export default function VariationExpandableCard({
             layoutId={card.type === 'image' ? `card-${card.id}-${id}` : undefined}
             key={card.id}
             onClick={() => setActive(card)}
-            className={`relative group cursor-pointer rounded-xl overflow-hidden border-2 transition-all ${
+            className={`relative group cursor-pointer overflow-hidden border-2 transition-all ${
               selectedId === card.id 
                 ? 'border-yellow-500 ring-2 ring-yellow-500/50' 
                 : 'border-border hover:border-primary/50'
