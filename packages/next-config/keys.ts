@@ -7,8 +7,6 @@ export const keys = () =>
     extends: [vercel()],
     server: {
       ANALYZE: z.string().optional(),
-
-      // Added by Vercel
       NEXT_RUNTIME: z.enum(['nodejs', 'edge']).optional(),
     },
     client: {
