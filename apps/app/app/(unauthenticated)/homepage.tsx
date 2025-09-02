@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@repo/design-system/components/ui/button';
 import { ScrollArea } from '@repo/design-system/components/ui/scroll-area';
 import { Skeleton } from '@repo/design-system/components/ui/skeleton';

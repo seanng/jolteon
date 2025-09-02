@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 export default async function RootPage() {
   const user = await auth();
 
-  if (!user.userId) {
+  if (user.userId) {
     redirect('/dashboard');
   }
   
