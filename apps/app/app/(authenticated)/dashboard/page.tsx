@@ -4,15 +4,15 @@ import { auth } from '@repo/auth/server';
 import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { notFound } from 'next/navigation';
-import { AvatarStack } from './components/avatar-stack';
-import { Cursors } from './components/cursors';
-import { Header } from './components/header';
+import { AvatarStack } from '../components/avatar-stack';
+import { Cursors } from '../components/cursors';
+import { Header } from '../components/header';
 
 const title = 'Acme Inc';
 const description = 'My application.';
 
 const CollaborationProvider = dynamic(() =>
-  import('./components/collaboration-provider').then(
+  import('../components/collaboration-provider').then(
     (mod) => mod.CollaborationProvider
   )
 );
