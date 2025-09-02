@@ -40,10 +40,16 @@
 /* Hero Section Styles */
 .hero-grid {
   background-image:
-    linear-gradient(rgba(255, 214, 10, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 214, 10, 0.1) 1px, transparent 1px);
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
   background-size: 50px 50px;
   animation: grid-move 10s linear infinite;
+}
+
+.dark .hero-grid {
+  background-image:
+    linear-gradient(rgba(255, 214, 10, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 214, 10, 0.1) 1px, transparent 1px);
 }
 
 .hero-title-highlight {
