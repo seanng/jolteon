@@ -18,7 +18,7 @@ export const addToWaitlist = async (
       credentials: {
         client_email: env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL,
         private_key: env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(
-          /\n/g,
+          /\\n/g,
           '\n'
         ),
       },
