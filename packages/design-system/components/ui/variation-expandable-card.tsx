@@ -28,13 +28,14 @@ export default function VariationExpandableCard({
   selectedId 
 }: VariationExpandableCardProps) {
   const [active, setActive] = useState<VariationCard | null>(null);
+  const [isClosing, setIsClosing] = useState(false);
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setActive(null);
+        handleClose();
       }
     }
 
@@ -48,11 +49,25 @@ export default function VariationExpandableCard({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [active]);
 
-  useOutsideClick(ref as React.RefObject<HTMLDivElement>, () => setActive(null));
+  useOutsideClick(ref as React.RefObject<HTMLDivElement>, () => handleClose());
+
+  const handleClose = () => {
+    if (active?.type === 'html') {
+      // For HTML cards, use a fade-out transition before closing
+      setIsClosing(true);
+      setTimeout(() => {
+        setActive(null);
+        setIsClosing(false);
+      }, 150);
+    } else {
+      // For image cards, close immediately to allow smooth layout animation
+      setActive(null);
+    }
+  };
 
   const handleSelect = (card: VariationCard) => {
     // Close the expanded view first, then trigger selection after animation
-    setActive(null);
+    handleClose();
     // Delay selection to allow close animation to complete
     setTimeout(() => {
       onSelect(card.id);
@@ -81,29 +96,39 @@ export default function VariationExpandableCard({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.05 } }}
               className="absolute top-4 right-4 flex items-center justify-center bg-white dark:bg-neutral-800 rounded-full h-10 w-10 z-[10001]"
-              onClick={() => setActive(null)}
+              onClick={handleClose}
             >
               <X className="h-5 w-5" />
             </motion.button>
             
             <motion.div
-              layoutId={`card-${active.id}-${id}`}
+              layoutId={active.type === 'image' ? `card-${active.id}-${id}` : undefined}
               ref={ref}
               className="w-full max-w-7xl h-full md:h-[85vh] flex flex-col bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden"
+              initial={active.type === 'html' ? { opacity: 0, scale: 0.95 } : undefined}
+              animate={{ opacity: isClosing ? 0 : 1, scale: 1 }}
+              exit={active.type === 'html' ? { opacity: 0, scale: 0.95 } : undefined}
               transition={{
-                type: "spring",
-                stiffness: 350,
-                damping: 35
+                type: active.type === 'html' ? "tween" : "spring",
+                duration: active.type === 'html' ? 0.15 : undefined,
+                stiffness: active.type === 'image' ? 350 : undefined,
+                damping: active.type === 'image' ? 35 : undefined
               }}
             >
               {/* Use a placeholder div instead of layoutId for the preview to avoid iframe issues */}
               <div className="flex-1 relative">
                 {active.type === 'html' ? (
-                  <iframe
-                    srcDoc={active.content}
+                  <motion.div
                     className="w-full h-full"
-                    title={active.title}
-                  />
+                    animate={{ opacity: isClosing ? 0 : 1 }}
+                    transition={{ duration: 0.1 }}
+                  >
+                    <iframe
+                      srcDoc={active.content}
+                      className="w-full h-full"
+                      title={active.title}
+                    />
+                  </motion.div>
                 ) : (
                   <motion.img
                     layoutId={`image-${active.id}-${id}`}
@@ -167,7 +192,7 @@ export default function VariationExpandableCard({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {cards.map((card, index) => (
           <motion.div
-            layoutId={`card-${card.id}-${id}`}
+            layoutId={card.type === 'image' ? `card-${card.id}-${id}` : undefined}
             key={card.id}
             onClick={() => setActive(card)}
             className={`relative group cursor-pointer rounded-xl overflow-hidden border-2 transition-all ${
@@ -175,20 +200,20 @@ export default function VariationExpandableCard({
                 ? 'border-yellow-500 ring-2 ring-yellow-500/50' 
                 : 'border-border hover:border-primary/50'
             }`}
+            initial={card.type === 'html' ? { opacity: 1 } : undefined}
+            whileHover={card.type === 'html' ? { scale: 1.02 } : undefined}
             transition={{
-              type: "spring",
-              stiffness: 350,
-              damping: 35
+              type: card.type === 'html' ? "tween" : "spring",
+              duration: card.type === 'html' ? 0.15 : undefined,
+              stiffness: card.type === 'image' ? 350 : undefined,
+              damping: card.type === 'image' ? 35 : undefined
             }}
           >
             <div className="aspect-video bg-neutral-50 dark:bg-neutral-800">
               {card.type === 'html' ? (
                 <div className="relative w-full h-full overflow-hidden">
                   {/* Use a background gradient as placeholder for HTML content */}
-                  <div 
-                    className="absolute inset-0 bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-700"
-                    style={{ opacity: active?.id === card.id ? 0 : 1, transition: 'opacity 0.15s' }}
-                  >
+                  <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-700">
                     <iframe
                       srcDoc={card.content}
                       className="w-full h-full pointer-events-none scale-[0.3] origin-top-left"
