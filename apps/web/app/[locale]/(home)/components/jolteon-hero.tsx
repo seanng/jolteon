@@ -4,6 +4,7 @@ import { EmailCaptureForm } from '@repo/design-system/components/ui/email-captur
 import type { Dictionary } from '@repo/internationalization';
 import { Play } from 'lucide-react';
 import { addToWaitlist } from '@/app/actions/waitlist';
+import { Countdown } from './countdown';
 
 type JolteonHeroProps = {
   dictionary: Dictionary;
@@ -16,6 +17,7 @@ export const JolteonHero = ({ dictionary }: JolteonHeroProps) => {
 
       <div className="container relative z-10 mx-auto">
         <div className="mx-auto max-w-[1400px] text-center">
+          <Countdown />
           <h1 className="mb-5 font-bold font-headline text-6xl uppercase leading-[0.9] tracking-[-2px] md:text-8xl lg:text-[96px]">
             <span className="relative block">Create at the</span>
             <span className="hero-title-highlight -skew-x-[5deg] relative my-2.5 block transform text-primary md:my-5">
@@ -31,7 +33,7 @@ export const JolteonHero = ({ dictionary }: JolteonHeroProps) => {
           <div className="relative z-10">
             <EmailCaptureForm
               onSubmit={addToWaitlist}
-              buttonText="Join waitlist"
+              buttonText="Get Promo Code"
             />
           </div>
 
